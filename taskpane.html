@@ -1,0 +1,1531 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Astrovidrios - Control Documentos</title>
+<script src="https://appsforoffice.microsoft.com/lib/1/hosted/office.js" type="text/javascript"></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&family=Inter:wght@400;500;600&display=swap');
+
+:root {
+  --primary: #2B3092;
+  --primary-dark: #1c2066;
+  --primary-light: #4c52c9;
+  --accent: #E31E24;
+  --accent-dark: #b3151a;
+  --bg: #F3F5FC;
+  --card: #FFFFFF;
+  --text: #1A1B3A;
+  --muted: #6b7280;
+  --green: #16a34a;
+  --amber: #d97706;
+  --red: #E31E24;
+  --radius: 16px;
+  --radius-sm: 10px;
+  --shadow: 0 4px 16px rgba(43,48,146,0.10);
+}
+
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  font-family: 'Inter', sans-serif;
+  background: linear-gradient(180deg, #EEF1FC 0%, #F7F8FD 100%);
+  color: var(--text);
+  font-size: 13px;
+}
+
+.app { padding-bottom: 24px; }
+
+/* ---------- HEADER ---------- */
+.app-header {
+  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+  padding: 16px 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 3px solid var(--accent);
+}
+.brand { display: flex; align-items: center; gap: 10px; }
+.brand-badge {
+  width: 36px; height: 36px; border-radius: 50%;
+  background: var(--accent);
+  color: white; font-family: 'Poppins', sans-serif; font-weight: 700; font-size: 18px;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.25);
+}
+.brand-text { display: flex; flex-direction: column; line-height: 1.2; }
+.brand-title { font-family: 'Poppins', sans-serif; font-weight: 700; font-size: 16px; color: white; letter-spacing: 0.5px; }
+.brand-sub { font-size: 10px; color: rgba(255,255,255,0.8); }
+.brand-logo { max-height: 40px; }
+.btn-refresh {
+  background: rgba(255,255,255,0.15);
+  border: none; color: white; border-radius: 50%;
+  width: 32px; height: 32px; font-size: 16px; cursor: pointer;
+  transition: transform 0.2s;
+}
+.btn-refresh:hover { transform: rotate(90deg); background: rgba(255,255,255,0.28); }
+
+/* ---------- STATUS PILL ---------- */
+.status-pill {
+  position: sticky; top: 0; z-index: 50;
+  margin: 8px 14px 0; padding: 8px 14px;
+  border-radius: 999px; font-size: 12px; font-weight: 600;
+  align-items: center; box-shadow: var(--shadow);
+}
+.status-ok { background: #e7f7ec; color: var(--green); }
+.status-error { background: #fdeaea; color: var(--red); }
+
+/* ---------- TABS ---------- */
+.tabs {
+  display: flex; gap: 6px; padding: 12px 14px 4px;
+  overflow-x: auto;
+}
+.tab-button {
+  flex: 1;
+  border: none; background: #E4E7F5; color: var(--muted);
+  font-family: 'Inter', sans-serif; font-weight: 600; font-size: 12px;
+  padding: 9px 6px; border-radius: 999px; cursor: pointer;
+  transition: all 0.2s; white-space: nowrap;
+}
+.tab-button.active {
+  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+  color: white; box-shadow: 0 3px 10px rgba(43,48,146,0.35);
+}
+.tab-panel { display: none; padding: 4px 14px 14px; }
+.tab-panel.active { display: block; }
+
+/* ---------- CARDS ---------- */
+.card {
+  background: var(--card); border-radius: var(--radius);
+  box-shadow: var(--shadow); padding: 14px; margin-bottom: 12px;
+}
+.card-header {
+  display: flex; justify-content: space-between; align-items: center;
+  font-weight: 700; font-family: 'Poppins', sans-serif; font-size: 13px;
+  margin-bottom: 10px; color: var(--primary-dark);
+}
+.btn-mini {
+  border: 1.5px solid var(--primary); background: white; color: var(--primary);
+  border-radius: 999px; padding: 4px 12px; font-size: 11px; font-weight: 600;
+  cursor: pointer; transition: all 0.15s;
+}
+.btn-mini:hover { background: var(--primary); color: white; }
+
+/* ---------- FORM FIELDS ---------- */
+label { display: block; font-size: 11px; font-weight: 600; color: var(--muted); margin: 10px 0 4px; }
+input, select {
+  width: 100%; padding: 9px 12px; border-radius: var(--radius-sm);
+  border: 1.5px solid #DFE3F5; font-size: 13px; font-family: 'Inter', sans-serif;
+  background: #FAFBFF; color: var(--text); transition: border-color 0.15s, box-shadow 0.15s;
+}
+input:focus, select:focus {
+  outline: none; border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(43,48,146,0.12);
+}
+input:disabled { background: #EEF0F8; color: var(--muted); }
+
+.btn-primary {
+  width: 100%; margin-top: 14px; padding: 11px;
+  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+  color: white; border: none; border-radius: 999px;
+  font-weight: 700; font-size: 13px; cursor: pointer;
+  box-shadow: 0 4px 12px rgba(43,48,146,0.3);
+  transition: transform 0.15s;
+}
+.btn-primary:hover { transform: translateY(-1px); }
+.btn-secondary {
+  flex: 1; padding: 11px; background: #EEF0F8; color: var(--text);
+  border: none; border-radius: 999px; font-weight: 600; font-size: 13px; cursor: pointer;
+}
+
+/* ---------- COMBO BUSCADOR ---------- */
+.combo-wrap { position: relative; margin-bottom: 10px; }
+.combo-input { border-radius: 999px; padding-left: 16px; }
+.combo-menu {
+  display: none; position: absolute; top: 44px; left: 0; right: 0; z-index: 40;
+  background: white; border-radius: var(--radius-sm); box-shadow: 0 8px 24px rgba(43,48,146,0.22);
+  max-height: 320px; overflow-y: auto; padding: 4px;
+}
+.combo-menu.open { display: block; }
+.combo-item { padding: 8px 10px; border-radius: 8px; cursor: pointer; }
+.combo-item:hover { background: #EEF1FC; }
+.combo-item-top, .combo-item-bottom { display: flex; justify-content: space-between; }
+.combo-id { font-weight: 700; color: var(--primary); font-size: 12px; }
+.combo-fecha { font-size: 11px; color: var(--muted); }
+.combo-cliente { font-size: 12px; color: var(--text); }
+.combo-valor { font-size: 12px; font-weight: 600; color: var(--primary-dark); }
+.combo-fv { font-size: 10px; color: var(--muted); margin-top: 2px; }
+
+/* ---------- REFERENCIA / DOC GRID ---------- */
+.ref-box {
+  background: #EEF1FC; border-left: 3px solid var(--primary);
+  border-radius: var(--radius-sm); padding: 10px 12px; margin-bottom: 10px; font-size: 12px;
+}
+.doc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.doc-grid .span2 { grid-column: span 2; }
+.doc-grid label { margin: 0 0 2px; font-size: 10px; }
+.doc-grid span { font-size: 13px; font-weight: 600; }
+
+/* ---------- KPI ---------- */
+.kpi-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px; }
+.kpi-card {
+  border-radius: var(--radius-sm); padding: 12px; display: flex; flex-direction: column; gap: 3px;
+  border-left: 4px solid transparent; background: white; box-shadow: var(--shadow);
+}
+.kpi-blue { border-left-color: var(--primary); }
+.kpi-green { border-left-color: var(--green); background: #f0fbf3; }
+.kpi-red { border-left-color: var(--red); background: #fdeeee; }
+.kpi-amber { border-left-color: var(--amber); background: #fef6ea; }
+.kpi-label { font-size: 10px; color: var(--muted); font-weight: 600; text-transform: uppercase; }
+.kpi-value { font-size: 16px; font-weight: 700; font-family: 'Poppins', sans-serif; }
+.kpi-sub { font-size: 10px; color: var(--muted); }
+
+/* ---------- STAT BAR (bloques Pagos/Costos) ---------- */
+.stat-bar { display: flex; gap: 10px; margin-bottom: 10px; }
+.stat-item {
+  flex: 1; background: #EEF1FC; border-radius: var(--radius-sm); padding: 8px 10px;
+}
+.stat-item label { font-size: 10px; margin: 0 0 2px; }
+.stat-item span { font-weight: 700; font-size: 13px; }
+.stat-green { color: var(--green) !important; }
+.stat-amber { color: var(--amber) !important; }
+.stat-red { color: var(--red) !important; }
+
+/* ---------- LISTA DE TRANSACCIONES ---------- */
+.lista-transacciones { display: flex; flex-direction: column; gap: 6px; }
+.trans-row {
+  position: relative; background: #FAFBFF; border: 1px solid #E4E7F5;
+  border-radius: var(--radius-sm); padding: 10px 26px 10px 12px; cursor: pointer;
+  transition: background 0.15s;
+}
+.trans-row:hover { background: #EEF1FC; }
+.trans-main { display: flex; align-items: center; gap: 8px; margin-bottom: 3px; }
+.trans-id { font-weight: 700; font-size: 12px; color: var(--primary-dark); }
+.trans-badge { font-size: 9px; font-weight: 700; padding: 2px 8px; border-radius: 999px; text-transform: uppercase; }
+.badge-abono { background: #fef6ea; color: var(--amber); }
+.badge-saldo { background: #f0fbf3; color: var(--green); }
+.badge-concepto { background: #EEF1FC; color: var(--primary); }
+.trans-detail { display: flex; justify-content: space-between; font-size: 12px; color: var(--muted); }
+.trans-valor { font-weight: 700; color: var(--text); }
+.trans-obs { font-size: 11px; color: var(--muted); margin-top: 3px; font-style: italic; }
+.trans-info { font-size: 11px; color: var(--amber); margin-top: 3px; font-weight: 600; }
+.hint-text { font-size: 11px; color: var(--muted); margin: 0 0 10px; line-height: 1.4; }
+
+/* ---------- FILA BUSCADOR + ORDEN ---------- */
+.search-row { display: flex; align-items: flex-start; gap: 8px; margin-bottom: 10px; flex-wrap: wrap; }
+.search-row .combo-wrap { flex: 1; min-width: 140px; margin-bottom: 0; }
+.search-row .sort-wrap { flex: 0 0 auto; margin-bottom: 0; }
+.sort-wrap { display: flex; align-items: center; }
+.sort-select { width: auto; flex: none; padding: 9px 10px; font-size: 12px; }
+.trans-chevron { position: absolute; right: 10px; top: 50%; transform: translateY(-50%); color: var(--muted); font-size: 16px; }
+.trans-total {
+  display: flex; justify-content: space-between; padding: 10px 12px;
+  background: var(--primary); color: white; border-radius: var(--radius-sm);
+  font-weight: 700; font-size: 12px; margin-top: 4px;
+}
+.empty-msg { text-align: center; color: var(--muted); font-size: 12px; padding: 16px 0; }
+
+/* ---------- MODAL (bottom sheet) ---------- */
+.modal-overlay {
+  position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(26,27,58,0.55); z-index: 90; opacity: 0; pointer-events: none;
+  transition: opacity 0.2s;
+}
+.modal-overlay.open { opacity: 1; pointer-events: all; }
+.modal-sheet {
+  position: fixed; left: 0; right: 0; bottom: 0; z-index: 91;
+  background: white; border-radius: 20px 20px 0 0;
+  box-shadow: 0 -8px 30px rgba(0,0,0,0.25);
+  padding: 8px 16px 16px; max-height: 82vh; overflow-y: auto;
+  transform: translateY(100%); transition: transform 0.25s ease;
+}
+.modal-sheet.open { transform: translateY(0); }
+.modal-handle { width: 40px; height: 4px; background: #DFE3F5; border-radius: 999px; margin: 6px auto 10px; }
+.modal-sheet h3 { font-family: 'Poppins', sans-serif; color: var(--primary-dark); font-size: 15px; margin: 0 0 8px; }
+.modal-body label { margin: 8px 0 3px; }
+.modal-actions { display: flex; gap: 10px; margin-top: 14px; }
+
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="app-header">
+    <div class="brand">
+      <div class="brand-badge">M</div>
+      <div class="brand-text">
+        <span class="brand-title">ASTROVIDRIOS</span>
+        <span class="brand-sub">El Mayorista de Santander</span>
+      </div>
+    </div>
+    <button id="btn-refrescar" class="btn-refresh" title="Actualizar cambios directos en Excel">⟳</button>
+  </header>
+
+  <div id="status" class="status-pill" style="display:none;"></div>
+
+  <nav class="tabs">
+    <button class="tab-button active" data-tab="tab-resumen">📊 Resumen</button>
+    <button class="tab-button" data-tab="tab-venta">🧾 Venta</button>
+    <button class="tab-button" data-tab="tab-pagos">💳 Pagos</button>
+    <button class="tab-button" data-tab="tab-costos">📦 Costos</button>
+    <button class="tab-button" data-tab="tab-sindoc">🔗 Sin Doc</button>
+  </nav>
+
+  <!-- ===================== RESUMEN ===================== -->
+  <section id="tab-resumen" class="tab-panel active">
+    <div class="search-row">
+      <div class="combo-wrap">
+        <input type="text" id="resumen-idDoc" class="combo-input" placeholder="Buscar por id, cliente, FV, fecha o valor..." autocomplete="off" />
+        <div id="resumen-idDoc-menu" class="combo-menu"></div>
+      </div>
+      <div class="sort-wrap">
+        <select id="resumen-orden" class="sort-select">
+          <option value="docid_desc">Id Doc (desc.)</option>
+          <option value="cliente_asc">Cliente (A-Z)</option>
+          <option value="fecha_desc">Fecha (desc.)</option>
+        </select>
+      </div>
+    </div>
+    <div id="resumen-content" style="display:none;"></div>
+  </section>
+
+  <!-- ===================== VENTA ===================== -->
+  <section id="tab-venta" class="tab-panel">
+    <div class="card">
+      <div class="card-header"><span>Nuevo documento de venta</span></div>
+      <label>id Doc</label>
+      <input type="text" id="doc-idDoc" disabled />
+
+      <label>Tipo</label>
+      <select id="doc-tipo">
+        <option value="General">General</option>
+        <option value="Obra">Obra</option>
+      </select>
+
+      <label>Fecha</label>
+      <input type="date" id="doc-fecha" />
+
+      <label>FV id</label>
+      <input type="text" id="doc-fvId" />
+
+      <label>Descripción</label>
+      <input type="text" id="doc-descripcion" />
+
+      <label>Cliente</label>
+      <input type="text" id="doc-cliente" />
+
+      <label>Valor Total</label>
+      <input type="text" inputmode="numeric" data-money id="doc-valorTotal" />
+
+      <label>Retención</label>
+      <input type="text" inputmode="numeric" data-money id="doc-retencion" />
+
+      <label>Impuestos</label>
+      <input type="text" inputmode="numeric" data-money id="doc-impuestos" />
+
+      <label>Observación</label>
+      <input type="text" id="doc-observacion" />
+
+      <button id="btn-guardar-doc" class="btn-primary">Guardar documento</button>
+    </div>
+  </section>
+
+  <!-- ===================== PAGOS ===================== -->
+  <section id="tab-pagos" class="tab-panel">
+    <div class="search-row">
+      <div class="combo-wrap">
+        <input type="text" id="pago-idDoc" class="combo-input" placeholder="Buscar por id, cliente, FV, fecha o valor (déjalo vacío si aún no hay documento)..." autocomplete="off" />
+        <div id="pago-idDoc-menu" class="combo-menu"></div>
+      </div>
+      <div class="sort-wrap">
+        <select id="pago-orden" class="sort-select">
+          <option value="docid_desc">Id Doc (desc.)</option>
+          <option value="cliente_asc">Cliente (A-Z)</option>
+          <option value="fecha_desc">Fecha (desc.)</option>
+        </select>
+      </div>
+    </div>
+    <div id="pago-ref" class="ref-box" style="display:none;"></div>
+    <div id="pago-resumen" class="card" style="display:none;"></div>
+
+    <div class="card">
+      <div class="card-header"><span>Registrar pago</span></div>
+      <p class="hint-text">Si dejas el buscador de arriba vacío, el pago se guarda sin documento asociado y luego puedes vincularlo desde la pestaña "Sin Doc".</p>
+      <label>id Pago</label>
+      <input type="text" id="pago-idPago" disabled />
+
+      <label>Tipo de pago</label>
+      <select id="pago-tipoPago">
+        <option value="ABONO">ABONO</option>
+        <option value="SALDO FINAL">SALDO FINAL</option>
+      </select>
+
+      <label>Fecha</label>
+      <input type="date" id="pago-fecha" />
+
+      <label>Valor</label>
+      <input type="text" inputmode="numeric" data-money id="pago-valor" />
+
+      <label>Observación</label>
+      <input type="text" id="pago-observacion" />
+
+      <label>Info Provisional</label>
+      <input type="text" id="pago-infoProvisional" />
+
+      <button id="btn-guardar-pago" class="btn-primary">Guardar pago</button>
+    </div>
+  </section>
+
+  <!-- ===================== COSTOS ===================== -->
+  <section id="tab-costos" class="tab-panel">
+    <div class="search-row">
+      <div class="combo-wrap">
+        <input type="text" id="costo-idDoc" class="combo-input" placeholder="Buscar por id, cliente, FV, fecha o valor..." autocomplete="off" />
+        <div id="costo-idDoc-menu" class="combo-menu"></div>
+      </div>
+      <div class="sort-wrap">
+        <select id="costo-orden" class="sort-select">
+          <option value="docid_desc">Id Doc (desc.)</option>
+          <option value="cliente_asc">Cliente (A-Z)</option>
+          <option value="fecha_desc">Fecha (desc.)</option>
+        </select>
+      </div>
+    </div>
+    <div id="costo-ref" class="ref-box" style="display:none;"></div>
+    <div id="costo-resumen" class="card" style="display:none;"></div>
+
+    <div class="card">
+      <div class="card-header"><span>Registrar costo/gasto</span></div>
+      <p class="hint-text">Si dejas el buscador de arriba vacío, el costo/gasto se guarda sin documento asociado y luego puedes vincularlo desde la pestaña "Sin Doc".</p>
+      <label>id Costo Gasto</label>
+      <input type="text" id="costo-idCostoGasto" disabled />
+
+      <label>Concepto</label>
+      <select id="costo-concepto">
+        <option value="GASTOS">GASTOS</option>
+        <option value="VIDRIO/ESPEJO">VIDRIO/ESPEJO</option>
+        <option value="ALUMINIO">ALUMINIO</option>
+        <option value="ACCESORIOS">ACCESORIOS</option>
+        <option value="V. TEMPLADOS">V. TEMPLADOS</option>
+        <option value="OTROS">OTROS</option>
+        <option value="ACARREO">ACARREO</option>
+        <option value="MANO OBRA">MANO OBRA</option>
+      </select>
+
+      <label>Fecha</label>
+      <input type="date" id="costo-fecha" />
+
+      <label>Valor</label>
+      <input type="text" inputmode="numeric" data-money id="costo-valor" />
+
+      <label>Observación</label>
+      <input type="text" id="costo-observacion" />
+
+      <label>Info Provisional</label>
+      <input type="text" id="costo-infoProvisional" />
+
+      <button id="btn-guardar-costo" class="btn-primary">Guardar costo/gasto</button>
+    </div>
+  </section>
+
+  <!-- ===================== SIN DOCUMENTO ===================== -->
+  <section id="tab-sindoc" class="tab-panel">
+    <div id="sindoc-content"></div>
+  </section>
+
+  <!-- ===================== MODAL (bottom sheet) ===================== -->
+  <div id="modal-overlay" class="modal-overlay"></div>
+  <div id="modal-sheet" class="modal-sheet">
+    <div class="modal-handle"></div>
+    <h3 id="modal-title"></h3>
+    <div id="modal-body" class="modal-body"></div>
+    <div class="modal-actions">
+      <button id="modal-cancelar" class="btn-secondary">Cancelar</button>
+      <button id="modal-guardar" class="btn-primary">Guardar cambios</button>
+    </div>
+  </div>
+</div>
+
+<script>
+Office.onReady(function (info) {
+// ============================================================
+// UTILIDADES
+// ============================================================
+function showStatus(msg, isError = false) {
+    const el = document.getElementById("status");
+    el.textContent = msg;
+    el.className = "status-pill " + (isError ? "status-error" : "status-ok");
+    el.style.display = "flex";
+    window.clearTimeout(el._timeout);
+    el._timeout = window.setTimeout(() => {
+        el.style.display = "none";
+    }, 4000);
+}
+function parseDateLocal(value) {
+    if (!value)
+        return null;
+    const parts = value.split("-");
+    return new Date(Number(parts[0]), Number(parts[1]) - 1, Number(parts[2]));
+}
+function toDateInputValue(d) {
+    const y = d.getFullYear();
+    const m = String(d.getMonth() + 1).padStart(2, "0");
+    const day = String(d.getDate()).padStart(2, "0");
+    return `${y}-${m}-${day}`;
+}
+function formatFechaCorta(d) {
+    if (!d)
+        return "s/f";
+    const dd = String(d.getDate()).padStart(2, "0");
+    const mm = String(d.getMonth() + 1).padStart(2, "0");
+    return `${dd}/${mm}/${d.getFullYear()}`;
+}
+function formatMoney(v) {
+    const sign = v < 0 ? "-" : "";
+    return sign + "$" + Math.abs(Math.round(v)).toLocaleString("es-CO");
+}
+function excelSerialToDate(n) {
+    return new Date(Math.round((n - 25569) * 86400 * 1000));
+}
+function esc(s) {
+    return (s || "").replace(/"/g, "&quot;").replace(/</g, "&lt;");
+}
+// ---------- Inputs de moneda (formato $ en vivo) ----------
+// Cualquier <input data-money> se formatea automáticamente como moneda
+// mientras el usuario escribe. getMoneyValue() recupera el número real.
+function getMoneyValue(input) {
+    const raw = (input.value || "").replace(/[^\d-]/g, "");
+    if (raw === "" || raw === "-")
+        return 0;
+    return parseInt(raw, 10);
+}
+function setMoneyValue(input, num) {
+    input.value = num ? formatMoney(num) : "";
+}
+function initMoneyInputs(container) {
+    container.querySelectorAll("input[data-money]").forEach((el) => {
+        const input = el;
+        const initial = parseFloat(input.value) || 0;
+        input.value = initial ? formatMoney(initial) : "";
+        input.addEventListener("input", () => {
+            const raw = input.value.replace(/[^\d-]/g, "");
+            const neg = raw.trim().startsWith("-");
+            const digits = raw.replace(/-/g, "");
+            if (digits === "") {
+                input.value = neg ? "-" : "";
+                return;
+            }
+            const num = parseInt(digits, 10) * (neg ? -1 : 1);
+            input.value = formatMoney(num);
+        });
+    });
+}
+let docsMap = {};
+let docsOrder = [];
+// La clave "" agrupa los registros sin id Doc asociado (pestaña Sin Documento).
+let pagosPorDoc = {};
+let costosPorDoc = {};
+let nextIdNumber = 1;
+let nextPagoNumber = 1;
+let nextCostoNumber = 1;
+const CONCEPTOS_COSTO = [
+    "GASTOS", "VIDRIO/ESPEJO", "ALUMINIO", "ACCESORIOS",
+    "V. TEMPLADOS", "OTROS", "ACARREO", "MANO OBRA"
+];
+// ============================================================
+// CARGA DE DATOS DESDE EXCEL
+// ============================================================
+async function cargarDocumentos() {
+    await Excel.run(async (context) => {
+        var _a, _b, _c, _d, _e, _f;
+        const sheet = context.workbook.worksheets.getItem("Documentos");
+        const table = sheet.tables.getItem("TablaDocumentos");
+        const bodyRange = table.getDataBodyRange();
+        bodyRange.load("values");
+        await context.sync();
+        const values = bodyRange.values;
+        docsMap = {};
+        docsOrder = [];
+        let maxNum = 0;
+        for (const row of values) {
+            const idDoc = String((_a = row[0]) !== null && _a !== void 0 ? _a : "").trim();
+            if (!idDoc)
+                continue;
+            const tipo = String((_b = row[1]) !== null && _b !== void 0 ? _b : "General");
+            const fechaRaw = row[2];
+            let fecha = null;
+            if (fechaRaw instanceof Date)
+                fecha = fechaRaw;
+            else if (typeof fechaRaw === "number")
+                fecha = excelSerialToDate(fechaRaw);
+            const fvId = String((_c = row[3]) !== null && _c !== void 0 ? _c : "");
+            const descripcion = String((_d = row[4]) !== null && _d !== void 0 ? _d : "");
+            const cliente = String((_e = row[5]) !== null && _e !== void 0 ? _e : "");
+            const valorTotal = Number(row[6]) || 0;
+            const retencion = Number(row[7]) || 0;
+            const impuestos = Number(row[8]) || 0;
+            const observacion = String((_f = row[9]) !== null && _f !== void 0 ? _f : "");
+            docsMap[idDoc] = { tipo, fecha, fvId, descripcion, cliente, valorTotal, retencion, impuestos, observacion };
+            docsOrder.push(idDoc);
+            const match = idDoc.match(/^V-(\d+)$/);
+            if (match) {
+                const n = parseInt(match[1], 10);
+                if (n > maxNum)
+                    maxNum = n;
+            }
+        }
+        nextIdNumber = maxNum + 1;
+        const idField = document.getElementById("doc-idDoc");
+        if (idField)
+            idField.value = "V-" + String(nextIdNumber).padStart(7, "0");
+    });
+}
+async function cargarContadoresPagosCostos() {
+    await Excel.run(async (context) => {
+        var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k;
+        const pagosSheet = context.workbook.worksheets.getItem("Control Pagos");
+        const pagosTable = pagosSheet.tables.getItem("TablaControlPagos");
+        const pagosRange = pagosTable.getDataBodyRange();
+        pagosRange.load("values");
+        const costosSheet = context.workbook.worksheets.getItem("Control Costos Gastos");
+        const costosTable = costosSheet.tables.getItem("TablaControlCostosGastos");
+        const costosRange = costosTable.getDataBodyRange();
+        costosRange.load("values");
+        await context.sync();
+        let maxPago = 0;
+        pagosPorDoc = {};
+        for (const row of pagosRange.values) {
+            const idDocRow = String((_a = row[0]) !== null && _a !== void 0 ? _a : "").trim();
+            const idPago = String((_b = row[1]) !== null && _b !== void 0 ? _b : "");
+            if (!idPago)
+                continue;
+            const tipoPago = String((_c = row[2]) !== null && _c !== void 0 ? _c : "");
+            const fechaRaw = row[3];
+            let fecha = null;
+            if (fechaRaw instanceof Date)
+                fecha = fechaRaw;
+            else if (typeof fechaRaw === "number")
+                fecha = excelSerialToDate(fechaRaw);
+            const valor = Number(row[4]) || 0;
+            const observacion = String((_d = row[5]) !== null && _d !== void 0 ? _d : "");
+            const infoProvisional = String((_e = row[6]) !== null && _e !== void 0 ? _e : "");
+            const key = idDocRow; // "" = sin documento asociado
+            if (!pagosPorDoc[key])
+                pagosPorDoc[key] = [];
+            pagosPorDoc[key].push({ idPago, tipoPago, fecha, valor, observacion, infoProvisional });
+            const m = idPago.match(/^P-(\d+)$/);
+            if (m) {
+                const n = parseInt(m[1], 10);
+                if (n > maxPago)
+                    maxPago = n;
+            }
+        }
+        nextPagoNumber = maxPago + 1;
+        actualizarCampoIdPago();
+        let maxCosto = 0;
+        costosPorDoc = {};
+        for (const row of costosRange.values) {
+            const idDocRow = String((_f = row[0]) !== null && _f !== void 0 ? _f : "").trim();
+            const idCosto = String((_g = row[1]) !== null && _g !== void 0 ? _g : "");
+            if (!idCosto)
+                continue;
+            const fechaRaw = row[2];
+            let fecha = null;
+            if (fechaRaw instanceof Date)
+                fecha = fechaRaw;
+            else if (typeof fechaRaw === "number")
+                fecha = excelSerialToDate(fechaRaw);
+            const concepto = String((_h = row[3]) !== null && _h !== void 0 ? _h : "");
+            const valor = Number(row[4]) || 0;
+            const observacion = String((_j = row[5]) !== null && _j !== void 0 ? _j : "");
+            const infoProvisional = String((_k = row[6]) !== null && _k !== void 0 ? _k : "");
+            const key = idDocRow; // "" = sin documento asociado
+            if (!costosPorDoc[key])
+                costosPorDoc[key] = [];
+            costosPorDoc[key].push({ idCosto, fecha, concepto, valor, observacion, infoProvisional });
+            const m = idCosto.match(/^C-(\d+)$/);
+            if (m) {
+                const n = parseInt(m[1], 10);
+                if (n > maxCosto)
+                    maxCosto = n;
+            }
+        }
+        nextCostoNumber = maxCosto + 1;
+        actualizarCampoIdCosto();
+    });
+}
+function actualizarCampoIdPago() {
+    const field = document.getElementById("pago-idPago");
+    if (field)
+        field.value = "P-" + String(nextPagoNumber).padStart(7, "0");
+}
+function actualizarCampoIdCosto() {
+    const field = document.getElementById("costo-idCostoGasto");
+    if (field)
+        field.value = "C-" + String(nextCostoNumber).padStart(7, "0");
+}
+function calcularDerivados(idDoc) {
+    const info = docsMap[idDoc];
+    if (!info)
+        return null;
+    const totalPagos = (pagosPorDoc[idDoc] || []).reduce((a, p) => a + p.valor, 0);
+    const totalCostos = (costosPorDoc[idDoc] || []).reduce((a, c) => a + c.valor, 0);
+    const saldo = info.valorTotal - totalPagos;
+    const pctSaldo = info.valorTotal !== 0 ? (saldo / info.valorTotal) * 100 : 0;
+    const utilidad = info.valorTotal - totalCostos;
+    const rentabilidad = info.valorTotal !== 0 ? (utilidad / info.valorTotal) * 100 : 0;
+    return { totalPagos, totalCostos, saldo, pctSaldo, utilidad, rentabilidad };
+}
+function compararPorOrden(a, b, orden) {
+    const infoA = docsMap[a];
+    const infoB = docsMap[b];
+    if (orden === "cliente_asc") {
+        return (infoA.cliente || "").localeCompare(infoB.cliente || "", "es", { sensitivity: "base" });
+    }
+    if (orden === "fecha_desc") {
+        const ta = infoA.fecha ? infoA.fecha.getTime() : -Infinity;
+        const tb = infoB.fecha ? infoB.fecha.getTime() : -Infinity;
+        return tb - ta;
+    }
+    // docid_desc (formato V-0000000, comparación de texto ya ordena bien numéricamente)
+    return b.localeCompare(a);
+}
+function buscarDocumentos(query, orden = "docid_desc") {
+    const q = query.trim().toLowerCase();
+    let candidatos;
+    if (!q) {
+        candidatos = docsOrder.slice();
+    }
+    else {
+        candidatos = docsOrder.filter((idDoc) => {
+            const info = docsMap[idDoc];
+            const fechaStr = formatFechaCorta(info.fecha).toLowerCase();
+            const haystack = [idDoc, info.fvId, info.cliente, fechaStr, String(info.valorTotal)]
+                .join(" ").toLowerCase();
+            return haystack.includes(q);
+        });
+    }
+    candidatos.sort((a, b) => compararPorOrden(a, b, orden));
+    return candidatos.slice(0, 50);
+}
+function renderComboItem(idDoc) {
+    const info = docsMap[idDoc];
+    return `<div class="combo-item" data-id="${idDoc}">
+    <div class="combo-item-top">
+      <span class="combo-id">${idDoc}</span>
+      <span class="combo-fecha">${formatFechaCorta(info.fecha)}</span>
+    </div>
+    <div class="combo-item-bottom">
+      <span class="combo-cliente">${esc(info.cliente) || "-"}</span>
+      <span class="combo-valor">${formatMoney(info.valorTotal)}</span>
+    </div>
+    ${info.fvId ? `<div class="combo-fv">FV ${esc(info.fvId)}</div>` : ""}
+  </div>`;
+}
+function setupCombo(inputId, menuId, sortSelectId, onSelect) {
+    const input = document.getElementById(inputId);
+    const menu = document.getElementById(menuId);
+    const sortSelect = sortSelectId ? document.getElementById(sortSelectId) : null;
+    function ordenActual() {
+        return (sortSelect ? sortSelect.value : "docid_desc");
+    }
+    function render(filter) {
+        const matches = buscarDocumentos(filter, ordenActual());
+        menu.innerHTML = matches.map(renderComboItem).join("");
+        menu.querySelectorAll(".combo-item").forEach((item) => {
+            item.addEventListener("mousedown", (e) => {
+                e.preventDefault();
+                const idDoc = item.dataset.id;
+                input.value = idDoc;
+                menu.classList.remove("open");
+                onSelect(idDoc);
+            });
+        });
+        menu.classList.toggle("open", matches.length > 0);
+    }
+    input.addEventListener("input", () => render(input.value));
+    input.addEventListener("focus", () => render(input.value));
+    input.addEventListener("blur", () => setTimeout(() => menu.classList.remove("open"), 150));
+    if (sortSelect) {
+        sortSelect.addEventListener("change", () => render(input.value));
+    }
+}
+// ============================================================
+// LISTAS DE TRANSACCIONES (reutilizables)
+// ============================================================
+function buildListaPagosHTML(idDoc) {
+    const registros = pagosPorDoc[idDoc] || [];
+    if (registros.length === 0)
+        return `<p class="empty-msg">Sin pagos registrados.</p>`;
+    let total = 0;
+    let html = `<div class="lista-transacciones">`;
+    for (const r of registros) {
+        total += r.valor;
+        html += `<div class="trans-row" data-tipo="pago" data-id="${r.idPago}" data-doc="${idDoc}">
+      <div class="trans-main">
+        <span class="trans-id">${r.idPago}</span>
+        <span class="trans-badge ${r.tipoPago === "ABONO" ? "badge-abono" : "badge-saldo"}">${r.tipoPago}</span>
+      </div>
+      <div class="trans-detail">
+        <span>${formatFechaCorta(r.fecha)}</span>
+        <span class="trans-valor">${formatMoney(r.valor)}</span>
+      </div>
+      ${r.observacion ? `<div class="trans-obs">${esc(r.observacion)}</div>` : ""}
+      ${r.infoProvisional ? `<div class="trans-info">🔸 ${esc(r.infoProvisional)}</div>` : ""}
+      <span class="trans-chevron">›</span>
+    </div>`;
+    }
+    html += `<div class="trans-total"><span>Total pagado</span><span>${formatMoney(total)}</span></div>`;
+    html += `</div>`;
+    return html;
+}
+function buildListaCostosHTML(idDoc) {
+    const registros = costosPorDoc[idDoc] || [];
+    if (registros.length === 0)
+        return `<p class="empty-msg">Sin costos/gastos registrados.</p>`;
+    let total = 0;
+    let html = `<div class="lista-transacciones">`;
+    for (const r of registros) {
+        total += r.valor;
+        html += `<div class="trans-row" data-tipo="costo" data-id="${r.idCosto}" data-doc="${idDoc}">
+      <div class="trans-main">
+        <span class="trans-id">${r.idCosto}</span>
+        <span class="trans-badge badge-concepto">${esc(r.concepto)}</span>
+      </div>
+      <div class="trans-detail">
+        <span>${formatFechaCorta(r.fecha)}</span>
+        <span class="trans-valor">${formatMoney(r.valor)}</span>
+      </div>
+      ${r.observacion ? `<div class="trans-obs">${esc(r.observacion)}</div>` : ""}
+      ${r.infoProvisional ? `<div class="trans-info">🔸 ${esc(r.infoProvisional)}</div>` : ""}
+      <span class="trans-chevron">›</span>
+    </div>`;
+    }
+    html += `<div class="trans-total"><span>Total costos</span><span>${formatMoney(total)}</span></div>`;
+    html += `</div>`;
+    return html;
+}
+function buildResumenPagosBloque(idDoc) {
+    const d = calcularDerivados(idDoc);
+    if (!d)
+        return "";
+    const pctClass = d.saldo <= 0 ? "stat-green" : "stat-amber";
+    return `<div class="stat-bar">
+      <div class="stat-item"><label>Total pagado</label><span>${formatMoney(d.totalPagos)}</span></div>
+      <div class="stat-item"><label>Saldo pendiente</label><span class="${pctClass}">${formatMoney(d.saldo)} · ${d.pctSaldo.toFixed(1)}%</span></div>
+    </div>` + buildListaPagosHTML(idDoc);
+}
+function buildResumenCostosBloque(idDoc) {
+    const d = calcularDerivados(idDoc);
+    if (!d)
+        return "";
+    const pctClass = d.rentabilidad >= 0 ? "stat-green" : "stat-red";
+    return `<div class="stat-bar">
+      <div class="stat-item"><label>Total costos</label><span>${formatMoney(d.totalCostos)}</span></div>
+      <div class="stat-item"><label>Rentabilidad</label><span class="${pctClass}">${d.rentabilidad.toFixed(1)}%</span></div>
+    </div>` + buildListaCostosHTML(idDoc);
+}
+function bindTransRowClicks(container) {
+    container.querySelectorAll(".trans-row").forEach((row) => {
+        row.addEventListener("click", () => {
+            const tipo = row.dataset.tipo;
+            const id = row.dataset.id;
+            const doc = row.dataset.doc;
+            if (tipo === "pago")
+                abrirEdicionPago(doc, id);
+            else
+                abrirEdicionCosto(doc, id);
+        });
+    });
+}
+// ============================================================
+// ACTUALIZAR FILA EXISTENTE EN UNA TABLA DE EXCEL
+// ============================================================
+async function actualizarFilaEnTabla(sheetName, tableName, idColIndex, idValue, newValues) {
+    let found = false;
+    await Excel.run(async (context) => {
+        const sheet = context.workbook.worksheets.getItem(sheetName);
+        const table = sheet.tables.getItem(tableName);
+        const bodyRange = table.getDataBodyRange();
+        bodyRange.load("values");
+        await context.sync();
+        const values = bodyRange.values;
+        for (let i = 0; i < values.length; i++) {
+            if (String(values[i][idColIndex]) === idValue) {
+                const rowRange = bodyRange.getRow(i);
+                rowRange.values = [newValues];
+                await context.sync();
+                found = true;
+                break;
+            }
+        }
+    });
+    return found;
+}
+let modalMode = null;
+let modalDoc = "";
+let modalId = "";
+function abrirModal() {
+    document.getElementById("modal-overlay").classList.add("open");
+    document.getElementById("modal-sheet").classList.add("open");
+}
+function cerrarModal() {
+    document.getElementById("modal-overlay").classList.remove("open");
+    document.getElementById("modal-sheet").classList.remove("open");
+    modalMode = null;
+}
+function abrirEdicionDocumento(idDoc) {
+    const info = docsMap[idDoc];
+    if (!info)
+        return;
+    modalMode = "editDoc";
+    modalDoc = idDoc;
+    document.getElementById("modal-title").textContent = `Editar documento ${idDoc}`;
+    document.getElementById("modal-body").innerHTML = `
+    <label>Tipo</label>
+    <select id="m-tipo">
+      <option value="General" ${info.tipo === "General" ? "selected" : ""}>General</option>
+      <option value="Obra" ${info.tipo === "Obra" ? "selected" : ""}>Obra</option>
+    </select>
+    <label>Fecha</label>
+    <input type="date" id="m-fecha" value="${info.fecha ? toDateInputValue(info.fecha) : ""}" />
+    <label>FV id</label>
+    <input type="text" id="m-fvid" value="${esc(info.fvId)}" />
+    <label>Descripción</label>
+    <input type="text" id="m-desc" value="${esc(info.descripcion)}" />
+    <label>Cliente</label>
+    <input type="text" id="m-cliente" value="${esc(info.cliente)}" />
+    <label>Valor Total</label>
+    <input type="text" inputmode="numeric" data-money id="m-valor" value="${info.valorTotal}" />
+    <label>Retención</label>
+    <input type="text" inputmode="numeric" data-money id="m-retencion" value="${info.retencion}" />
+    <label>Impuestos</label>
+    <input type="text" inputmode="numeric" data-money id="m-impuestos" value="${info.impuestos}" />
+    <label>Observación</label>
+    <input type="text" id="m-observacion" value="${esc(info.observacion)}" />
+  `;
+    initMoneyInputs(document.getElementById("modal-body"));
+    abrirModal();
+}
+function abrirEdicionPago(idDoc, idPago) {
+    const reg = (pagosPorDoc[idDoc] || []).find((p) => p.idPago === idPago);
+    if (!reg)
+        return;
+    modalMode = "editPago";
+    modalDoc = idDoc;
+    modalId = idPago;
+    document.getElementById("modal-title").textContent = `Editar pago ${idPago}`;
+    document.getElementById("modal-body").innerHTML = `
+    <label>id Doc</label>
+    <input type="text" id="m-idDoc" value="${esc(idDoc)}" placeholder="Déjalo vacío si aún no hay documento" />
+    <label>Tipo de pago</label>
+    <select id="m-tipoPago">
+      <option value="ABONO" ${reg.tipoPago === "ABONO" ? "selected" : ""}>ABONO</option>
+      <option value="SALDO FINAL" ${reg.tipoPago === "SALDO FINAL" ? "selected" : ""}>SALDO FINAL</option>
+    </select>
+    <label>Fecha</label>
+    <input type="date" id="m-fecha" value="${reg.fecha ? toDateInputValue(reg.fecha) : ""}" />
+    <label>Valor</label>
+    <input type="text" inputmode="numeric" data-money id="m-valor" value="${reg.valor}" />
+    <label>Observación</label>
+    <input type="text" id="m-obs" value="${esc(reg.observacion)}" />
+    <label>Info Provisional</label>
+    <input type="text" id="m-infoProv" value="${esc(reg.infoProvisional)}" />
+  `;
+    initMoneyInputs(document.getElementById("modal-body"));
+    abrirModal();
+}
+function abrirEdicionCosto(idDoc, idCosto) {
+    const reg = (costosPorDoc[idDoc] || []).find((c) => c.idCosto === idCosto);
+    if (!reg)
+        return;
+    modalMode = "editCosto";
+    modalDoc = idDoc;
+    modalId = idCosto;
+    document.getElementById("modal-title").textContent = `Editar costo ${idCosto}`;
+    document.getElementById("modal-body").innerHTML = `
+    <label>id Doc</label>
+    <input type="text" id="m-idDoc" value="${esc(idDoc)}" placeholder="Déjalo vacío si aún no hay documento" />
+    <label>Concepto</label>
+    <select id="m-concepto">
+      ${CONCEPTOS_COSTO.map((c) => `<option value="${c}" ${c === reg.concepto ? "selected" : ""}>${c}</option>`).join("")}
+    </select>
+    <label>Fecha</label>
+    <input type="date" id="m-fecha" value="${reg.fecha ? toDateInputValue(reg.fecha) : ""}" />
+    <label>Valor</label>
+    <input type="text" inputmode="numeric" data-money id="m-valor" value="${reg.valor}" />
+    <label>Observación</label>
+    <input type="text" id="m-obs" value="${esc(reg.observacion)}" />
+    <label>Info Provisional</label>
+    <input type="text" id="m-infoProv" value="${esc(reg.infoProvisional)}" />
+  `;
+    initMoneyInputs(document.getElementById("modal-body"));
+    abrirModal();
+}
+function abrirCreacionPago(idDoc) {
+    if (idDoc && !docsMap[idDoc]) {
+        showStatus("El id Doc ingresado no existe.", true);
+        return;
+    }
+    modalMode = "newPago";
+    modalDoc = idDoc;
+    modalId = "P-" + String(nextPagoNumber).padStart(7, "0");
+    document.getElementById("modal-title").textContent = idDoc ? `Nuevo pago · ${idDoc}` : "Nuevo pago sin documento";
+    document.getElementById("modal-body").innerHTML = `
+    <label>id Pago</label>
+    <input type="text" value="${modalId}" disabled />
+    <label>id Doc</label>
+    <input type="text" id="m-idDoc" value="${esc(idDoc)}" placeholder="Déjalo vacío si aún no hay documento" />
+    <label>Tipo de pago</label>
+    <select id="m-tipoPago">
+      <option value="ABONO">ABONO</option>
+      <option value="SALDO FINAL" selected>SALDO FINAL</option>
+    </select>
+    <label>Fecha</label>
+    <input type="date" id="m-fecha" />
+    <label>Valor</label>
+    <input type="text" inputmode="numeric" data-money id="m-valor" />
+    <label>Observación</label>
+    <input type="text" id="m-obs" />
+    <label>Info Provisional</label>
+    <input type="text" id="m-infoProv" />
+  `;
+    initMoneyInputs(document.getElementById("modal-body"));
+    abrirModal();
+}
+function abrirCreacionCosto(idDoc) {
+    if (idDoc && !docsMap[idDoc]) {
+        showStatus("El id Doc ingresado no existe.", true);
+        return;
+    }
+    modalMode = "newCosto";
+    modalDoc = idDoc;
+    modalId = "C-" + String(nextCostoNumber).padStart(7, "0");
+    const info = docsMap[idDoc];
+    document.getElementById("modal-title").textContent = idDoc ? `Nuevo costo/gasto · ${idDoc}` : "Nuevo costo/gasto sin documento";
+    document.getElementById("modal-body").innerHTML = `
+    <label>id Costo Gasto</label>
+    <input type="text" value="${modalId}" disabled />
+    <label>id Doc</label>
+    <input type="text" id="m-idDoc" value="${esc(idDoc)}" placeholder="Déjalo vacío si aún no hay documento" />
+    <label>Concepto</label>
+    <select id="m-concepto">
+      ${CONCEPTOS_COSTO.map((c) => `<option value="${c}">${c}</option>`).join("")}
+    </select>
+    <label>Fecha</label>
+    <input type="date" id="m-fecha" value="${info && info.fecha ? toDateInputValue(info.fecha) : ""}" />
+    <label>Valor</label>
+    <input type="text" inputmode="numeric" data-money id="m-valor" />
+    <label>Observación</label>
+    <input type="text" id="m-obs" />
+    <label>Info Provisional</label>
+    <input type="text" id="m-infoProv" />
+  `;
+    initMoneyInputs(document.getElementById("modal-body"));
+    abrirModal();
+}
+async function guardarModal() {
+    try {
+        if (modalMode === "editDoc") {
+            const tipo = document.getElementById("m-tipo").value;
+            const fecha = parseDateLocal(document.getElementById("m-fecha").value);
+            const fvId = document.getElementById("m-fvid").value;
+            const descripcion = document.getElementById("m-desc").value;
+            const cliente = document.getElementById("m-cliente").value;
+            const valorTotal = getMoneyValue(document.getElementById("m-valor"));
+            const retencion = getMoneyValue(document.getElementById("m-retencion"));
+            const impuestos = getMoneyValue(document.getElementById("m-impuestos"));
+            const observacion = document.getElementById("m-observacion").value;
+            const ok = await actualizarFilaEnTabla("Documentos", "TablaDocumentos", 0, modalDoc, [modalDoc, tipo, fecha, fvId, descripcion, cliente, valorTotal, retencion, impuestos, observacion]);
+            if (ok) {
+                docsMap[modalDoc] = { tipo, fecha, fvId, descripcion, cliente, valorTotal, retencion, impuestos, observacion };
+                showStatus(`Documento ${modalDoc} actualizado.`);
+                cerrarModal();
+                refrescarSiCorresponde(modalDoc);
+            }
+            else
+                showStatus("No se encontró el documento para actualizar.", true);
+        }
+        else if (modalMode === "editPago") {
+            const nuevoDoc = document.getElementById("m-idDoc").value.trim();
+            if (nuevoDoc && !docsMap[nuevoDoc]) {
+                showStatus("El id Doc ingresado no existe.", true);
+                return;
+            }
+            const tipoPago = document.getElementById("m-tipoPago").value;
+            const fecha = parseDateLocal(document.getElementById("m-fecha").value);
+            const valor = getMoneyValue(document.getElementById("m-valor"));
+            const observacion = document.getElementById("m-obs").value;
+            const infoProvisional = document.getElementById("m-infoProv").value;
+            const ok = await actualizarFilaEnTabla("Control Pagos", "TablaControlPagos", 1, modalId, [nuevoDoc, modalId, tipoPago, fecha, valor, observacion, infoProvisional]);
+            if (ok) {
+                const anteriorDoc = modalDoc;
+                const arr = pagosPorDoc[anteriorDoc] || [];
+                const idx = arr.findIndex((p) => p.idPago === modalId);
+                if (idx >= 0)
+                    arr.splice(idx, 1);
+                if (!pagosPorDoc[nuevoDoc])
+                    pagosPorDoc[nuevoDoc] = [];
+                pagosPorDoc[nuevoDoc].push({ idPago: modalId, tipoPago, fecha, valor, observacion, infoProvisional });
+                showStatus(`Pago ${modalId} actualizado.`);
+                cerrarModal();
+                refrescarSiCorresponde(anteriorDoc);
+                refrescarSiCorresponde(nuevoDoc);
+                renderSinDocumento();
+            }
+            else
+                showStatus("No se encontró el pago para actualizar.", true);
+        }
+        else if (modalMode === "editCosto") {
+            const nuevoDoc = document.getElementById("m-idDoc").value.trim();
+            if (nuevoDoc && !docsMap[nuevoDoc]) {
+                showStatus("El id Doc ingresado no existe.", true);
+                return;
+            }
+            const concepto = document.getElementById("m-concepto").value;
+            const fecha = parseDateLocal(document.getElementById("m-fecha").value);
+            const valor = getMoneyValue(document.getElementById("m-valor"));
+            const observacion = document.getElementById("m-obs").value;
+            const infoProvisional = document.getElementById("m-infoProv").value;
+            const ok = await actualizarFilaEnTabla("Control Costos Gastos", "TablaControlCostosGastos", 1, modalId, [nuevoDoc, modalId, fecha, concepto, valor, observacion, infoProvisional]);
+            if (ok) {
+                const anteriorDoc = modalDoc;
+                const arr = costosPorDoc[anteriorDoc] || [];
+                const idx = arr.findIndex((c) => c.idCosto === modalId);
+                if (idx >= 0)
+                    arr.splice(idx, 1);
+                if (!costosPorDoc[nuevoDoc])
+                    costosPorDoc[nuevoDoc] = [];
+                costosPorDoc[nuevoDoc].push({ idCosto: modalId, fecha, concepto, valor, observacion, infoProvisional });
+                showStatus(`Costo ${modalId} actualizado.`);
+                cerrarModal();
+                refrescarSiCorresponde(anteriorDoc);
+                refrescarSiCorresponde(nuevoDoc);
+                renderSinDocumento();
+            }
+            else
+                showStatus("No se encontró el costo para actualizar.", true);
+        }
+        else if (modalMode === "newPago") {
+            const idDocDestino = document.getElementById("m-idDoc").value.trim();
+            if (idDocDestino && !docsMap[idDocDestino]) {
+                showStatus("El id Doc ingresado no existe.", true);
+                return;
+            }
+            const tipoPago = document.getElementById("m-tipoPago").value;
+            const fechaVal = document.getElementById("m-fecha").value;
+            const valor = getMoneyValue(document.getElementById("m-valor"));
+            const observacion = document.getElementById("m-obs").value;
+            const infoProvisional = document.getElementById("m-infoProv").value;
+            if (!fechaVal) {
+                showStatus("La fecha es obligatoria.", true);
+                return;
+            }
+            const fecha = parseDateLocal(fechaVal);
+            await Excel.run(async (context) => {
+                const sheet = context.workbook.worksheets.getItem("Control Pagos");
+                const table = sheet.tables.getItem("TablaControlPagos");
+                table.rows.add(-1, [[idDocDestino, modalId, tipoPago, fecha, valor, observacion, infoProvisional]]);
+                await context.sync();
+            });
+            if (!pagosPorDoc[idDocDestino])
+                pagosPorDoc[idDocDestino] = [];
+            pagosPorDoc[idDocDestino].push({ idPago: modalId, tipoPago, fecha, valor, observacion, infoProvisional });
+            nextPagoNumber++;
+            actualizarCampoIdPago();
+            showStatus(`Pago ${modalId} creado.`);
+            cerrarModal();
+            refrescarSiCorresponde(idDocDestino);
+            renderSinDocumento();
+        }
+        else if (modalMode === "newCosto") {
+            const idDocDestino = document.getElementById("m-idDoc").value.trim();
+            if (idDocDestino && !docsMap[idDocDestino]) {
+                showStatus("El id Doc ingresado no existe.", true);
+                return;
+            }
+            const concepto = document.getElementById("m-concepto").value;
+            const fechaVal = document.getElementById("m-fecha").value;
+            const valor = getMoneyValue(document.getElementById("m-valor"));
+            const observacion = document.getElementById("m-obs").value;
+            const infoProvisional = document.getElementById("m-infoProv").value;
+            if (!fechaVal) {
+                showStatus("La fecha es obligatoria.", true);
+                return;
+            }
+            const fecha = parseDateLocal(fechaVal);
+            await Excel.run(async (context) => {
+                const sheet = context.workbook.worksheets.getItem("Control Costos Gastos");
+                const table = sheet.tables.getItem("TablaControlCostosGastos");
+                table.rows.add(-1, [[idDocDestino, modalId, fecha, concepto, valor, observacion, infoProvisional]]);
+                await context.sync();
+            });
+            if (!costosPorDoc[idDocDestino])
+                costosPorDoc[idDocDestino] = [];
+            costosPorDoc[idDocDestino].push({ idCosto: modalId, fecha, concepto, valor, observacion, infoProvisional });
+            nextCostoNumber++;
+            actualizarCampoIdCosto();
+            showStatus(`Costo ${modalId} creado.`);
+            cerrarModal();
+            refrescarSiCorresponde(idDocDestino);
+            renderSinDocumento();
+        }
+    }
+    catch (error) {
+        showStatus("Error al guardar: " + error, true);
+    }
+}
+// ============================================================
+// REFRESCO DE VISTAS ACTIVAS
+// ============================================================
+function refrescarSiCorresponde(idDoc) {
+    const rInput = document.getElementById("resumen-idDoc");
+    if (rInput && rInput.value.trim() === idDoc && idDoc)
+        renderResumen(idDoc);
+    const pInput = document.getElementById("pago-idDoc");
+    if (pInput && pInput.value.trim() === idDoc && idDoc) {
+        const box = document.getElementById("pago-resumen");
+        box.innerHTML = buildResumenPagosBloque(idDoc);
+        bindTransRowClicks(box);
+    }
+    const cInput = document.getElementById("costo-idDoc");
+    if (cInput && cInput.value.trim() === idDoc && idDoc) {
+        const box = document.getElementById("costo-resumen");
+        box.innerHTML = buildResumenCostosBloque(idDoc);
+        bindTransRowClicks(box);
+    }
+}
+// ============================================================
+// PESTAÑA RESUMEN
+// ============================================================
+function renderResumen(idDoc) {
+    const info = docsMap[idDoc];
+    const panel = document.getElementById("resumen-content");
+    if (!info) {
+        panel.style.display = "none";
+        panel.innerHTML = "";
+        return;
+    }
+    const d = calcularDerivados(idDoc);
+    panel.style.display = "block";
+    panel.innerHTML = `
+    <div class="card">
+      <div class="card-header"><span>Documento</span><button class="btn-mini" id="btn-editar-doc">Editar</button></div>
+      <div class="doc-grid">
+        <div><label>Tipo</label><span>${esc(info.tipo)}</span></div>
+        <div><label>Fecha</label><span>${formatFechaCorta(info.fecha)}</span></div>
+        <div><label>FV id</label><span>${esc(info.fvId) || "-"}</span></div>
+        <div><label>Cliente</label><span>${esc(info.cliente)}</span></div>
+        <div class="span2"><label>Descripción</label><span>${esc(info.descripcion) || "-"}</span></div>
+        <div><label>Valor Total</label><span>${formatMoney(info.valorTotal)}</span></div>
+        <div><label>Retención</label><span>${formatMoney(info.retencion)}</span></div>
+        <div><label>Impuestos</label><span>${formatMoney(info.impuestos)}</span></div>
+        <div class="span2"><label>Observación</label><span>${esc(info.observacion) || "-"}</span></div>
+      </div>
+    </div>
+
+    <div class="kpi-grid">
+      <div class="kpi-card kpi-blue">
+        <span class="kpi-label">Costos totales</span>
+        <span class="kpi-value">${formatMoney(d.totalCostos)}</span>
+      </div>
+      <div class="kpi-card ${d.utilidad >= 0 ? "kpi-green" : "kpi-red"}">
+        <span class="kpi-label">Utilidad</span>
+        <span class="kpi-value">${formatMoney(d.utilidad)}</span>
+        <span class="kpi-sub">Rentabilidad ${d.rentabilidad.toFixed(1)}%</span>
+      </div>
+      <div class="kpi-card kpi-blue">
+        <span class="kpi-label">Pagado</span>
+        <span class="kpi-value">${formatMoney(d.totalPagos)}</span>
+      </div>
+      <div class="kpi-card ${d.saldo <= 0 ? "kpi-green" : "kpi-amber"}">
+        <span class="kpi-label">Saldo por cobrar</span>
+        <span class="kpi-value">${formatMoney(d.saldo)}</span>
+        <span class="kpi-sub">${d.pctSaldo.toFixed(1)}% pendiente</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header"><span>Historial de pagos</span><button class="btn-mini" id="btn-nuevo-pago-resumen">+ Nuevo</button></div>
+      <div id="resumen-lista-pagos">${buildListaPagosHTML(idDoc)}</div>
+    </div>
+
+    <div class="card">
+      <div class="card-header"><span>Historial de costos y gastos</span><button class="btn-mini" id="btn-nuevo-costo-resumen">+ Nuevo</button></div>
+      <div id="resumen-lista-costos">${buildListaCostosHTML(idDoc)}</div>
+    </div>
+  `;
+    bindTransRowClicks(panel);
+    document.getElementById("btn-editar-doc").addEventListener("click", () => abrirEdicionDocumento(idDoc));
+    document.getElementById("btn-nuevo-pago-resumen").addEventListener("click", () => abrirCreacionPago(idDoc));
+    document.getElementById("btn-nuevo-costo-resumen").addEventListener("click", () => abrirCreacionCosto(idDoc));
+}
+// ============================================================
+// PESTAÑA VENTA (crear documento)
+// ============================================================
+async function guardarDocumento() {
+    const idDoc = document.getElementById("doc-idDoc").value.trim();
+    const tipo = document.getElementById("doc-tipo").value;
+    const fechaVal = document.getElementById("doc-fecha").value;
+    const fvId = document.getElementById("doc-fvId").value;
+    const descripcion = document.getElementById("doc-descripcion").value;
+    const cliente = document.getElementById("doc-cliente").value;
+    const valorTotal = getMoneyValue(document.getElementById("doc-valorTotal"));
+    const retencion = getMoneyValue(document.getElementById("doc-retencion"));
+    const impuestos = getMoneyValue(document.getElementById("doc-impuestos"));
+    const observacion = document.getElementById("doc-observacion").value;
+    if (!fechaVal || !cliente) {
+        showStatus("Fecha y Cliente son obligatorios.", true);
+        return;
+    }
+    const fecha = parseDateLocal(fechaVal);
+    try {
+        await Excel.run(async (context) => {
+            const sheet = context.workbook.worksheets.getItem("Documentos");
+            const table = sheet.tables.getItem("TablaDocumentos");
+            table.rows.add(-1, [[idDoc, tipo, fecha, fvId, descripcion, cliente, valorTotal, retencion, impuestos, observacion]]);
+            await context.sync();
+        });
+        showStatus(`Documento ${idDoc} guardado correctamente.`);
+        limpiarFormularioDocumento();
+        await cargarDocumentos();
+    }
+    catch (error) {
+        showStatus("Error al guardar el documento: " + error, true);
+    }
+}
+function limpiarFormularioDocumento() {
+    document.getElementById("doc-fvId").value = "";
+    document.getElementById("doc-descripcion").value = "";
+    document.getElementById("doc-cliente").value = "";
+    document.getElementById("doc-valorTotal").value = "";
+    document.getElementById("doc-retencion").value = "";
+    document.getElementById("doc-impuestos").value = "";
+    document.getElementById("doc-observacion").value = "";
+}
+// ============================================================
+// PESTAÑA PAGOS
+// ============================================================
+function actualizarReferenciaPago(idDoc) {
+    const info = docsMap[idDoc];
+    const refBox = document.getElementById("pago-ref");
+    if (info) {
+        refBox.style.display = "block";
+        refBox.innerHTML = `<strong>${esc(info.cliente) || "-"}</strong> · ${formatFechaCorta(info.fecha)} · ${formatMoney(info.valorTotal)}`;
+    }
+    else {
+        refBox.style.display = "none";
+        refBox.innerHTML = "";
+    }
+}
+function actualizarResumenPago(idDoc) {
+    const box = document.getElementById("pago-resumen");
+    if (!idDoc || !docsMap[idDoc]) {
+        box.style.display = "none";
+        box.innerHTML = "";
+        return;
+    }
+    box.style.display = "block";
+    box.innerHTML = buildResumenPagosBloque(idDoc);
+    bindTransRowClicks(box);
+}
+async function guardarPago() {
+    const idDoc = document.getElementById("pago-idDoc").value.trim();
+    const idPago = document.getElementById("pago-idPago").value.trim();
+    const tipoPago = document.getElementById("pago-tipoPago").value;
+    const fechaVal = document.getElementById("pago-fecha").value;
+    const valor = getMoneyValue(document.getElementById("pago-valor"));
+    const observacion = document.getElementById("pago-observacion").value;
+    const infoProvisional = document.getElementById("pago-infoProvisional").value;
+    if (idDoc && !docsMap[idDoc]) {
+        showStatus("El 'id Doc' ingresado no existe en Documentos.", true);
+        return;
+    }
+    if (!fechaVal) {
+        showStatus("La Fecha es obligatoria.", true);
+        return;
+    }
+    const fecha = parseDateLocal(fechaVal);
+    try {
+        await Excel.run(async (context) => {
+            const sheet = context.workbook.worksheets.getItem("Control Pagos");
+            const table = sheet.tables.getItem("TablaControlPagos");
+            table.rows.add(-1, [[idDoc, idPago, tipoPago, fecha, valor, observacion, infoProvisional]]);
+            await context.sync();
+        });
+        showStatus(idDoc ? `Pago ${idPago} para ${idDoc} guardado correctamente.` : `Pago ${idPago} guardado sin documento asociado.`);
+        nextPagoNumber++;
+        actualizarCampoIdPago();
+        if (!pagosPorDoc[idDoc])
+            pagosPorDoc[idDoc] = [];
+        pagosPorDoc[idDoc].push({ idPago, tipoPago, fecha, valor, observacion, infoProvisional });
+        actualizarResumenPago(idDoc);
+        limpiarFormularioPago();
+        renderSinDocumento();
+    }
+    catch (error) {
+        showStatus("Error al guardar el pago: " + error, true);
+    }
+}
+function limpiarFormularioPago() {
+    document.getElementById("pago-fecha").value = "";
+    document.getElementById("pago-valor").value = "";
+    document.getElementById("pago-observacion").value = "";
+    document.getElementById("pago-infoProvisional").value = "";
+}
+// ============================================================
+// PESTAÑA COSTOS Y GASTOS
+// ============================================================
+function actualizarReferenciaCosto(idDoc) {
+    const info = docsMap[idDoc];
+    const refBox = document.getElementById("costo-ref");
+    const fechaField = document.getElementById("costo-fecha");
+    if (info) {
+        refBox.style.display = "block";
+        refBox.innerHTML = `<strong>${esc(info.cliente) || "-"}</strong> · ${formatFechaCorta(info.fecha)} · ${formatMoney(info.valorTotal)}`;
+        if (info.fecha)
+            fechaField.value = toDateInputValue(info.fecha);
+    }
+    else {
+        refBox.style.display = "none";
+        refBox.innerHTML = "";
+    }
+}
+function actualizarResumenCosto(idDoc) {
+    const box = document.getElementById("costo-resumen");
+    if (!idDoc || !docsMap[idDoc]) {
+        box.style.display = "none";
+        box.innerHTML = "";
+        return;
+    }
+    box.style.display = "block";
+    box.innerHTML = buildResumenCostosBloque(idDoc);
+    bindTransRowClicks(box);
+}
+async function guardarCosto() {
+    const idDoc = document.getElementById("costo-idDoc").value.trim();
+    const idCosto = document.getElementById("costo-idCostoGasto").value.trim();
+    const fechaVal = document.getElementById("costo-fecha").value;
+    const concepto = document.getElementById("costo-concepto").value;
+    const valor = getMoneyValue(document.getElementById("costo-valor"));
+    const observacion = document.getElementById("costo-observacion").value;
+    const infoProvisional = document.getElementById("costo-infoProvisional").value;
+    if (idDoc && !docsMap[idDoc]) {
+        showStatus("El 'id Doc' ingresado no existe en Documentos.", true);
+        return;
+    }
+    if (!fechaVal) {
+        showStatus("La Fecha es obligatoria.", true);
+        return;
+    }
+    const fecha = parseDateLocal(fechaVal);
+    try {
+        await Excel.run(async (context) => {
+            const sheet = context.workbook.worksheets.getItem("Control Costos Gastos");
+            const table = sheet.tables.getItem("TablaControlCostosGastos");
+            table.rows.add(-1, [[idDoc, idCosto, fecha, concepto, valor, observacion, infoProvisional]]);
+            await context.sync();
+        });
+        showStatus(idDoc ? `Costo/Gasto ${idCosto} para ${idDoc} guardado correctamente.` : `Costo/Gasto ${idCosto} guardado sin documento asociado.`);
+        nextCostoNumber++;
+        actualizarCampoIdCosto();
+        if (!costosPorDoc[idDoc])
+            costosPorDoc[idDoc] = [];
+        costosPorDoc[idDoc].push({ idCosto, fecha, concepto, valor, observacion, infoProvisional });
+        actualizarResumenCosto(idDoc);
+        limpiarFormularioCosto();
+        renderSinDocumento();
+    }
+    catch (error) {
+        showStatus("Error al guardar el costo/gasto: " + error, true);
+    }
+}
+function limpiarFormularioCosto() {
+    document.getElementById("costo-valor").value = "";
+    document.getElementById("costo-observacion").value = "";
+    document.getElementById("costo-infoProvisional").value = "";
+}
+// ============================================================
+// PESTAÑA SIN DOCUMENTO
+// ============================================================
+function renderSinDocumento() {
+    const panel = document.getElementById("sindoc-content");
+    if (!panel)
+        return;
+    const pagosSD = pagosPorDoc[""] || [];
+    const costosSD = costosPorDoc[""] || [];
+    const totalPagosSD = pagosSD.reduce((a, p) => a + p.valor, 0);
+    const totalCostosSD = costosSD.reduce((a, c) => a + c.valor, 0);
+    panel.innerHTML = `
+    <div class="stat-bar">
+      <div class="stat-item"><label>Pagos sin documento</label><span>${formatMoney(totalPagosSD)} · ${pagosSD.length} reg.</span></div>
+      <div class="stat-item"><label>Costos sin documento</label><span>${formatMoney(totalCostosSD)} · ${costosSD.length} reg.</span></div>
+    </div>
+
+    <div class="card">
+      <div class="card-header"><span>Pagos sin documento asociado</span><button class="btn-mini" id="btn-nuevo-pago-sindoc">+ Nuevo</button></div>
+      <div id="sindoc-lista-pagos">${buildListaPagosHTML("")}</div>
+    </div>
+
+    <div class="card">
+      <div class="card-header"><span>Costos/gastos sin documento asociado</span><button class="btn-mini" id="btn-nuevo-costo-sindoc">+ Nuevo</button></div>
+      <div id="sindoc-lista-costos">${buildListaCostosHTML("")}</div>
+    </div>
+  `;
+    bindTransRowClicks(panel);
+    document.getElementById("btn-nuevo-pago-sindoc").addEventListener("click", () => abrirCreacionPago(""));
+    document.getElementById("btn-nuevo-costo-sindoc").addEventListener("click", () => abrirCreacionCosto(""));
+}
+// ============================================================
+// PESTAÑAS
+// ============================================================
+function setupTabs() {
+    const buttons = document.querySelectorAll(".tab-button");
+    buttons.forEach((btn) => {
+        btn.addEventListener("click", () => {
+            const target = btn.dataset.tab;
+            document.querySelectorAll(".tab-panel").forEach((p) => p.classList.remove("active"));
+            document.querySelectorAll(".tab-button").forEach((b) => b.classList.remove("active"));
+            document.getElementById(target).classList.add("active");
+            btn.classList.add("active");
+        });
+    });
+}
+// ============================================================
+// ENTRADA PRINCIPAL
+// ============================================================
+async function run() {
+    setupTabs();
+    await cargarDocumentos();
+    await cargarContadoresPagosCostos();
+    initMoneyInputs(document);
+    renderSinDocumento();
+    setupCombo("resumen-idDoc", "resumen-idDoc-menu", "resumen-orden", (idDoc) => renderResumen(idDoc));
+    setupCombo("pago-idDoc", "pago-idDoc-menu", "pago-orden", (idDoc) => {
+        actualizarReferenciaPago(idDoc);
+        actualizarResumenPago(idDoc);
+    });
+    setupCombo("costo-idDoc", "costo-idDoc-menu", "costo-orden", (idDoc) => {
+        actualizarReferenciaCosto(idDoc);
+        actualizarResumenCosto(idDoc);
+    });
+    document.getElementById("btn-guardar-doc").addEventListener("click", guardarDocumento);
+    document.getElementById("btn-guardar-pago").addEventListener("click", guardarPago);
+    document.getElementById("btn-guardar-costo").addEventListener("click", guardarCosto);
+    document.getElementById("modal-guardar").addEventListener("click", guardarModal);
+    document.getElementById("modal-cancelar").addEventListener("click", cerrarModal);
+    document.getElementById("modal-overlay").addEventListener("click", cerrarModal);
+    document.getElementById("btn-refrescar").addEventListener("click", async () => {
+        await cargarDocumentos();
+        await cargarContadoresPagosCostos();
+        renderSinDocumento();
+        showStatus("Cambios directos en Excel actualizados.");
+    });
+}
+run();
+
+});
+</script>
+</body>
+</html>
