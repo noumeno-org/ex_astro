@@ -1501,6 +1501,14 @@ async function run() {
     await cargarContadoresPagosCostos();
     initMoneyInputs(document);
     renderSinDocumento();
+    // Si el botón de la cinta pasó ?tab=venta (o pagos/costos/sindoc), abre esa pestaña directo.
+    const params = new URLSearchParams(window.location.search);
+    const initialTab = params.get("tab");
+    if (initialTab) {
+        const btn = document.querySelector(`.tab-button[data-tab="tab-${initialTab}"]`);
+        if (btn)
+            btn.click();
+    }
     setupCombo("resumen-idDoc", "resumen-idDoc-menu", "resumen-orden", (idDoc) => renderResumen(idDoc));
     setupCombo("pago-idDoc", "pago-idDoc-menu", "pago-orden", (idDoc) => {
         actualizarReferenciaPago(idDoc);
