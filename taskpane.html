@@ -466,20 +466,20 @@ function parseDateLocal(value) {
     if (!value)
         return null;
     const parts = value.split("-");
-    return new Date(Number(parts[0]), Number(parts[1]) - 1, Number(parts[2]));
+    return new Date(Date.UTC(Number(parts[0]), Number(parts[1]) - 1, Number(parts[2])));
 }
 function toDateInputValue(d) {
-    const y = d.getFullYear();
-    const m = String(d.getMonth() + 1).padStart(2, "0");
-    const day = String(d.getDate()).padStart(2, "0");
+    const y = d.getUTCFullYear();
+    const m = String(d.getUTCMonth() + 1).padStart(2, "0");
+    const day = String(d.getUTCDate()).padStart(2, "0");
     return `${y}-${m}-${day}`;
 }
 function formatFechaCorta(d) {
     if (!d)
         return "s/f";
-    const dd = String(d.getDate()).padStart(2, "0");
-    const mm = String(d.getMonth() + 1).padStart(2, "0");
-    return `${dd}/${mm}/${d.getFullYear()}`;
+    const dd = String(d.getUTCDate()).padStart(2, "0");
+    const mm = String(d.getUTCMonth() + 1).padStart(2, "0");
+    return `${dd}/${mm}/${d.getUTCFullYear()}`;
 }
 function formatMoney(v) {
     const sign = v < 0 ? "-" : "";
