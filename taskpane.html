@@ -488,6 +488,14 @@ function formatMoney(v) {
 function excelSerialToDate(n) {
     return new Date(Math.round((n - 25569) * 86400 * 1000));
 }
+// Convierte un Date (construido siempre en UTC por parseDateLocal) al número de
+// serie que Excel espera. Se hace explícito porque no se puede confiar en que
+// el runtime convierta automáticamente un objeto Date al serializar la llamada.
+function fechaParaExcel(d) {
+    if (!d)
+        return "";
+    return Math.round(d.getTime() / 86400000) + 25569;
+}
 function esc(s) {
     return (s || "").replace(/"/g, "&quot;").replace(/</g, "&lt;");
 }
@@ -1037,7 +1045,7 @@ async function guardarModal() {
             const retencion = getMoneyValue(document.getElementById("m-retencion"));
             const impuestos = getMoneyValue(document.getElementById("m-impuestos"));
             const observacion = document.getElementById("m-observacion").value;
-            const ok = await actualizarFilaEnTabla("Documentos", "TablaDocumentos", 0, modalDoc, [modalDoc, tipo, fecha, fvId, descripcion, cliente, valorTotal, retencion, impuestos, observacion]);
+            const ok = await actualizarFilaEnTabla("Documentos", "TablaDocumentos", 0, modalDoc, [modalDoc, tipo, fechaParaExcel(fecha), fvId, descripcion, cliente, valorTotal, retencion, impuestos, observacion]);
             if (ok) {
                 docsMap[modalDoc] = { tipo, fecha, fvId, descripcion, cliente, valorTotal, retencion, impuestos, observacion };
                 showStatus(`Documento ${modalDoc} actualizado.`);
@@ -1058,7 +1066,7 @@ async function guardarModal() {
             const valor = getMoneyValue(document.getElementById("m-valor"));
             const observacion = document.getElementById("m-obs").value;
             const infoProvisional = document.getElementById("m-infoProv").value;
-            const ok = await actualizarFilaEnTabla("Control Pagos", "TablaControlPagos", 1, modalId, [nuevoDoc, modalId, tipoPago, fecha, valor, observacion, infoProvisional]);
+            const ok = await actualizarFilaEnTabla("Control Pagos", "TablaControlPagos", 1, modalId, [nuevoDoc, modalId, tipoPago, fechaParaExcel(fecha), valor, observacion, infoProvisional]);
             if (ok) {
                 const anteriorDoc = modalDoc;
                 const arr = pagosPorDoc[anteriorDoc] || [];
@@ -1088,7 +1096,7 @@ async function guardarModal() {
             const valor = getMoneyValue(document.getElementById("m-valor"));
             const observacion = document.getElementById("m-obs").value;
             const infoProvisional = document.getElementById("m-infoProv").value;
-            const ok = await actualizarFilaEnTabla("Control Costos Gastos", "TablaControlCostosGastos", 1, modalId, [nuevoDoc, modalId, fecha, concepto, valor, observacion, infoProvisional]);
+            const ok = await actualizarFilaEnTabla("Control Costos Gastos", "TablaControlCostosGastos", 1, modalId, [nuevoDoc, modalId, fechaParaExcel(fecha), concepto, valor, observacion, infoProvisional]);
             if (ok) {
                 const anteriorDoc = modalDoc;
                 const arr = costosPorDoc[anteriorDoc] || [];
@@ -1126,7 +1134,7 @@ async function guardarModal() {
             await Excel.run(async (context) => {
                 const sheet = context.workbook.worksheets.getItem("Control Pagos");
                 const table = sheet.tables.getItem("TablaControlPagos");
-                table.rows.add(-1, [[idDocDestino, modalId, tipoPago, fecha, valor, observacion, infoProvisional]]);
+                table.rows.add(-1, [[idDocDestino, modalId, tipoPago, fechaParaExcel(fecha), valor, observacion, infoProvisional]]);
                 await context.sync();
             });
             if (!pagosPorDoc[idDocDestino])
@@ -1158,7 +1166,7 @@ async function guardarModal() {
             await Excel.run(async (context) => {
                 const sheet = context.workbook.worksheets.getItem("Control Costos Gastos");
                 const table = sheet.tables.getItem("TablaControlCostosGastos");
-                table.rows.add(-1, [[idDocDestino, modalId, fecha, concepto, valor, observacion, infoProvisional]]);
+                table.rows.add(-1, [[idDocDestino, modalId, fechaParaExcel(fecha), concepto, valor, observacion, infoProvisional]]);
                 await context.sync();
             });
             if (!costosPorDoc[idDocDestino])
@@ -1284,7 +1292,7 @@ async function guardarDocumento() {
         await Excel.run(async (context) => {
             const sheet = context.workbook.worksheets.getItem("Documentos");
             const table = sheet.tables.getItem("TablaDocumentos");
-            table.rows.add(-1, [[idDoc, tipo, fecha, fvId, descripcion, cliente, valorTotal, retencion, impuestos, observacion]]);
+            table.rows.add(-1, [[idDoc, tipo, fechaParaExcel(fecha), fvId, descripcion, cliente, valorTotal, retencion, impuestos, observacion]]);
             await context.sync();
         });
         showStatus(`Documento ${idDoc} guardado correctamente.`);
@@ -1351,7 +1359,7 @@ async function guardarPago() {
         await Excel.run(async (context) => {
             const sheet = context.workbook.worksheets.getItem("Control Pagos");
             const table = sheet.tables.getItem("TablaControlPagos");
-            table.rows.add(-1, [[idDoc, idPago, tipoPago, fecha, valor, observacion, infoProvisional]]);
+            table.rows.add(-1, [[idDoc, idPago, tipoPago, fechaParaExcel(fecha), valor, observacion, infoProvisional]]);
             await context.sync();
         });
         showStatus(idDoc ? `Pago ${idPago} para ${idDoc} guardado correctamente.` : `Pago ${idPago} guardado sin documento asociado.`);
@@ -1424,7 +1432,7 @@ async function guardarCosto() {
         await Excel.run(async (context) => {
             const sheet = context.workbook.worksheets.getItem("Control Costos Gastos");
             const table = sheet.tables.getItem("TablaControlCostosGastos");
-            table.rows.add(-1, [[idDoc, idCosto, fecha, concepto, valor, observacion, infoProvisional]]);
+            table.rows.add(-1, [[idDoc, idCosto, fechaParaExcel(fecha), concepto, valor, observacion, infoProvisional]]);
             await context.sync();
         });
         showStatus(idDoc ? `Costo/Gasto ${idCosto} para ${idDoc} guardado correctamente.` : `Costo/Gasto ${idCosto} guardado sin documento asociado.`);
